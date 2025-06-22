@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登入入口網站</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Microsoft JhengHei', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      backdrop-filter: blur(10px);
+    }
+
+    .logo {
+      font-size: 2.5em;
+      color: #333;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 40px;
+      font-size: 1.1em;
+    }
+
+    .login-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .login-btn {
+      padding: 15px 30px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .member-btn {
+      background: linear-gradient(45deg, #4CAF50, #45a049);
+      color: white;
+    }
+
+    .member-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(76, 175, 80, 0.4);
+    }
+
+    .admin-btn {
+      background: linear-gradient(45deg, #2196F3, #1976D2);
+      color: white;
+    }
+
+    .admin-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(33, 150, 243, 0.4);
+    }
+
+    .login-btn:active {
+      transform: translateY(0);
+    }
+
+    .login-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .login-btn:hover::before {
+      left: 100%;
+    }
+
+    .status-message {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: bold;
+      display: none;
+    }
+
+    .success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .loading {
+      background-color: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+
+    .footer {
+      margin-top: 30px;
+      font-size: 0.9em;
+      color: #888;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 30px 20px;
+      }
+
+      .logo {
+        font-size: 2em;
+      }
+
+      .login-btn {
+        font-size: 1.1em;
+        padding: 12px 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="logo">🌟 入口網站</div>
+  <div class="subtitle">請選擇您的登入方式</div>
+
+  <div class="login-buttons">
+    <button class="login-btn member-btn" onclick="handleLogin('member')">
+      👤 會員登入
+    </button>
+    <button class="login-btn admin-btn" onclick="handleLogin('admin')">
+      🔧 管理員登入
+    </button>
+  </div>
+
+  <div id="statusMessage" class="status-message"></div>
+
+  <div class="footer">
+    <p>安全登入系統 v1.0</p>
+  </div>
+</div>
+
+<script>
+  // 後端API設定
+  const API_CONFIG = {
+    baseURL: 'http://localhost:8080', // 修改為你的後端伺服器地址
+    endpoints: {
+      memberLogin: '/member/login',
+      adminLogin: '/admin/login'
+    }
+  };
+
+  // 顯示狀態訊息
+  function showMessage(message, type = 'loading') {
+    const messageElement = document.getElementById('statusMessage');
+    messageElement.textContent = message;
+    messageElement.className = `status-message ${type}`;
+    messageElement.style.display = 'block';
+
+    if (type !== 'loading') {
+      setTimeout(() => {
+        messageElement.style.display = 'none';
+      }, 3000);
+    }
+  }
+
+  // 處理登入請求
+  async function handleLogin(userType) {
+    if (userType === 'member') {
+      // 直接跳轉到會員登入頁面
+      window.location.href = 'memberlogin.html';
+      return;
+    }
+    if (userType === 'admin') {
+      // 直接跳轉到會員登入頁面
+      window.location.href = 'admin-login.html';
+      return;
+    }
+
+    try {
+      showMessage('正在連接到伺服器...', 'loading');
+
+      // 管理員登入的API端點
+      const endpoint = API_CONFIG.endpoints.adminLogin;
+      const fullURL = API_CONFIG.baseURL + endpoint;
+
+      // 發送HTTP請求到後端
+      const response = await fetch(fullURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          loginType: userType,
+          timestamp: new Date().toISOString()
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        showMessage('管理員登入成功！', 'success');
+
+        // 跳轉到管理員頁面
+        setTimeout(() => {
+          window.location.href = '/admin-dashboard';
+        }, 1500);
+
+      } else {
+        const errorData = await response.json();
+        showMessage(`連接失敗：${errorData.message || '伺服器錯誤'}`, 'error');
+      }
+
+    } catch (error) {
+      console.error('登入錯誤:', error);
+      showMessage(`連接錯誤：${error.message}`, 'error');
+    }
+  }
+
+  // 測試後端連接
+  async function testConnection() {
+    try {
+      const response = await fetch(API_CONFIG.baseURL + '/api/health');
+      if (response.ok) {
+        console.log('後端連接正常');
+      } else {
+        console.warn('後端連接異常');
+      }
+    } catch (error) {
+      console.warn('無法連接到後端服務器:', error.message);
+    }
+  }
+
+  // 頁面載入時測試連接
+  window.addEventListener('load', testConnection);
+
+  // 錯誤處理
+  window.addEventListener('error', function(e) {
+    console.error('頁面錯誤:', e.error);
+  });
+</script>
+</body>
+</html>

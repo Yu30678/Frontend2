@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理員登入</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Microsoft JhengHei', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .login-container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      max-width: 420px;
+      width: 100%;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .logo {
+      font-size: 2.5em;
+      color: #667eea;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .title {
+      font-size: 1.8em;
+      color: #333;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 1em;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 500;
+      font-size: 0.95em;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 1em;
+      transition: all 0.3s ease;
+      background: #fafafa;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .form-input::placeholder {
+      color: #aaa;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      font-size: 1.1em;
+      padding: 5px;
+    }
+
+    .password-toggle:hover {
+      color: #667eea;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .login-btn:active {
+      transform: translateY(0);
+    }
+
+    .login-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .back-section {
+      text-align: center;
+      padding-top: 20px;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .back-text {
+      color: #666;
+      margin-bottom: 15px;
+      font-size: 0.95em;
+    }
+
+    .back-btn {
+      background: transparent;
+      color: #667eea;
+      border: 2px solid #667eea;
+      padding: 12px 30px;
+      border-radius: 12px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .back-btn:hover {
+      background: #667eea;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .status-message {
+      margin-bottom: 20px;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 500;
+      display: none;
+      text-align: center;
+    }
+
+    .success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .loading {
+      background-color: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .back-link a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .back-link a:hover {
+      color: #764ba2;
+      text-decoration: underline;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #ffffff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .admin-badge {
+      display: inline-block;
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 30px 20px;
+        margin: 10px;
+      }
+
+      .logo {
+        font-size: 2em;
+      }
+
+      .title {
+        font-size: 1.5em;
+      }
+
+      .form-input {
+        padding: 12px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="login-container">
+  <div class="header">
+    <div class="logo">🔧</div>
+    <div class="admin-badge">Administrator</div>
+    <div class="title">管理員登入</div>
+    <div class="subtitle">管理系統專用入口</div>
+  </div>
+
+  <div id="statusMessage" class="status-message"></div>
+
+  <form id="loginForm">
+    <div class="form-group">
+      <label for="username" class="form-label">管理員帳號</label>
+      <input
+              type="text"
+              id="username"
+              name="username"
+              class="form-input"
+              placeholder="請輸入管理員帳號"
+              required
+              autocomplete="username"
+      >
+    </div>
+
+    <div class="form-group" style="position: relative;">
+      <label for="password" class="form-label">管理員密碼</label>
+      <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-input"
+              placeholder="請輸入管理員密碼"
+              required
+              autocomplete="current-password"
+      >
+      <button type="button" class="password-toggle" onclick="togglePassword()">
+        👁️
+      </button>
+    </div>
+
+    <button type="submit" class="login-btn" id="loginBtn">
+      管理員登入
+    </button>
+  </form>
+
+  <div class="back-section">
+    <div class="back-text">返回主頁面</div>
+    <button type="button" class="back-btn" onclick="goToMain()">
+      返回入口
+    </button>
+  </div>
+
+  <div class="back-link">
+    <a href="javascript:history.back()">← 返回上一頁</a>
+  </div>
+</div>
+
+<script>
+  // API設定
+  const API_CONFIG = {
+    loginURL: 'http://localhost:8080/user/login'
+  };
+
+  // 表單元素
+  const loginForm = document.getElementById('loginForm');
+  const usernameInput = document.getElementById('username');
+  const passwordInput = document.getElementById('password');
+  const loginBtn = document.getElementById('loginBtn');
+  const statusMessage = document.getElementById('statusMessage');
+
+  // 顯示狀態訊息
+  function showMessage(message, type = 'loading') {
+    statusMessage.textContent = message;
+    statusMessage.className = `status-message ${type}`;
+    statusMessage.style.display = 'block';
+
+    if (type !== 'loading') {
+      setTimeout(() => {
+        statusMessage.style.display = 'none';
+      }, 4000);
+    }
+  }
+
+  // 切換密碼顯示/隱藏
+  function togglePassword() {
+    const passwordField = document.getElementById('password');
+    const toggleBtn = document.querySelector('.password-toggle');
+
+    if (passwordField.type === 'password') {
+      passwordField.type = 'text';
+      toggleBtn.textContent = '🙈';
+    } else {
+      passwordField.type = 'password';
+      toggleBtn.textContent = '👁️';
+    }
+  }
+
+  // 表單驗證
+  function validateForm() {
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    if (!username) {
+      showMessage('請輸入管理員帳號', 'error');
+      usernameInput.focus();
+      return false;
+    }
+
+    if (!password) {
+      showMessage('請輸入管理員密碼', 'error');
+      passwordInput.focus();
+      return false;
+    }
+
+    if (password.length < 6) {
+      showMessage('密碼長度至少需要6個字元', 'error');
+      passwordInput.focus();
+      return false;
+    }
+
+    return true;
+  }
+
+  // 處理登入提交
+  async function handleLogin(event) {
+    event.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    const formData = {
+      username: usernameInput.value.trim(),
+      password: passwordInput.value.trim()
+    };
+
+    try {
+      // 顯示載入狀態
+      loginBtn.disabled = true;
+      loginBtn.innerHTML = '<span class="loading-spinner"></span>登入中...';
+      showMessage('正在驗證管理員身份...', 'loading');
+
+      console.log('發送管理員登入請求到:', API_CONFIG.loginURL);
+      console.log('登入資料:', formData);
+
+      // 發送登入請求
+      const response = await fetch(API_CONFIG.loginURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      console.log('後端回應狀態:', response.status);
+
+      const result = await response.json();
+      console.log('後端回應內容:', result);
+
+      if (response.ok) {
+        showMessage('管理員登入成功！正在跳轉...', 'success');
+
+        // 儲存管理員登入資訊（如果需要）
+        if (result.token) {
+          console.log('管理員token:', result.token);
+        }
+
+        // 延遲跳轉到管理員後台
+        setTimeout(() => {
+          window.location.href = '/admin-dashboard.html'; // 修改為你的管理員後台路徑
+        }, 1500);
+
+      } else {
+        // 處理登入失敗
+        showMessage(result.message || '管理員登入失敗，請檢查您的帳號密碼', 'error');
+      }
+
+    } catch (error) {
+      console.error('管理員登入錯誤:', error);
+      showMessage('連接伺服器失敗，請稍後再試', 'error');
+    } finally {
+      // 恢復按鈕狀態
+      loginBtn.disabled = false;
+      loginBtn.innerHTML = '管理員登入';
+    }
+  }
+
+  // 返回入口頁面
+  function goToMain() {
+    window.location.href = 'index.html';
+  }
+
+  // 綁定事件監聽器
+  loginForm.addEventListener('submit', handleLogin);
+
+  // 登入按鈕點擊事件
+  loginBtn.addEventListener('click', function(event) {
+    event.preventDefault();
+    handleLogin(event);
+  });
+
+  // Enter鍵快速登入
+  document.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter' && !loginBtn.disabled) {
+      event.preventDefault();
+      handleLogin(event);
+    }
+  });
+
+  // 輸入時清除錯誤訊息
+  usernameInput.addEventListener('input', function() {
+    if (statusMessage.style.display === 'block' && statusMessage.classList.contains('error')) {
+      statusMessage.style.display = 'none';
+    }
+  });
+
+  passwordInput.addEventListener('input', function() {
+    if (statusMessage.style.display === 'block' && statusMessage.classList.contains('error')) {
+      statusMessage.style.display = 'none';
+    }
+  });
+
+  // 頁面載入完成後自動聚焦到帳號欄位
+  window.addEventListener('load', function() {
+    usernameInput.focus();
+  });
+</script>
+</body>
+</html>
