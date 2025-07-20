@@ -603,7 +603,7 @@
 <script>
   // API設定
   const API_CONFIG = {
-    baseURL: 'http://localhost:8080',
+    baseURL: 'https://intellij-project1-production.up.railway.app',
     endpoints: {
       products: '/user/products',
       categories: '/user/categories'
@@ -612,7 +612,7 @@
   
   // 圖片服務設定
   const IMAGE_CONFIG = {
-    baseURL: 'http://localhost:8081/images'
+    baseURL: 'https://intellij-project1-production.up.railway.app/images'
   };
 
   // 全域變數
@@ -780,9 +780,9 @@
       // 處理圖片URL - 修正錯誤的端口號
       let imageUrl = null;
       if (product.image_url) {
-        if (product.image_url.startsWith('http://localhost:8080/images/')) {
+        if (product.image_url.startsWith('https://intellij-project1-production.up.railway.app/images/')) {
           // 修正錯誤的端口號
-          imageUrl = product.image_url.replace('http://localhost:8080/images/', `${IMAGE_CONFIG.baseURL}/`);
+          imageUrl = product.image_url.replace('https://intellij-project1-production.up.railway.app/images/', `${IMAGE_CONFIG.baseURL}/`);
         } else if (product.image_url.startsWith('http://') || product.image_url.startsWith('https://')) {
           imageUrl = product.image_url; // 其他完整URL直接使用
         } else {

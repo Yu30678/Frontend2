@@ -548,7 +548,7 @@
 
   // 上傳相關變數
   let selectedFiles = [];
-  const UPLOAD_API_URL = 'http://localhost:8081/api/upload';
+  const UPLOAD_API_URL = 'https://intellij-project1-production.up.railway.app/api/upload';
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
   const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
 
@@ -759,7 +759,7 @@
       
       // 方式2: 嘗試不同的 URL (可能需要不同的端點)
       try {
-        const altUrl = 'http://localhost:8080/api/upload'; // 嘗試主後端
+        const altUrl = 'https://intellij-project1-production.up.railway.app/api/upload'; // 嘗試主後端
         const response = await fetch(altUrl, {
           method: 'POST',
           mode: 'cors',

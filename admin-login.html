@@ -327,7 +327,7 @@
 <script>
   // API設定
   const API_CONFIG = {
-    loginURL: 'http://localhost:8080/user/users/login'
+    loginURL: 'https://intellij-project1-production.up.railway.app/user/users/login'
   };
 
   // 表單元素
@@ -487,7 +487,7 @@
       if (error.message.includes('CORS')) {
         errorMessage = 'CORS跨域錯誤，請檢查後端CORS設定';
       } else if (error.message.includes('Failed to fetch')) {
-        errorMessage = '無法連接到後端服務器，請確認服務器是否運行在 http://localhost:8080';
+        errorMessage = '無法連接到後端服務器，請確認服務器是否運行在 https://intellij-project1-production.up.railway.app';
       } else if (error.message.includes('JSON')) {
         errorMessage = '伺服器回應格式錯誤';
       }
