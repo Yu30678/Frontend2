@@ -306,7 +306,9 @@
   </div>
 
   <div class="back-link">
-    <a href="javascript:history.back()">← 返回上一頁</a>
+    <button type="button" class="register-btn" onclick="goToMain()">
+      返回主畫面
+    </button>
   </div>
 </div>
 
@@ -417,14 +419,54 @@
       if (response.ok) {
         showMessage('登入成功！正在跳轉...', 'success');
 
-        // 儲存登入資訊（如果需要）
+        // 儲存登入資訊
         if (result.token) {
           console.log('登入token:', result.token);
+          localStorage.setItem('authToken', result.token);
+        }
+
+        // 從後端回應中取得會員ID
+        let member_id = null;
+        if (result.member_id) {
+          member_id = result.member_id;
+        } else if (result.data && result.data.member_id) {
+          member_id = result.data.member_id;
+        } else if (result.user && result.user.id) {
+          member_id = result.user.id;
+        } else if (result.id) {
+          member_id = result.id;
+        }
+
+        console.log('從後端取得的會員ID:', member_id);
+
+        if (member_id) {
+          // 儲存會員ID到localStorage
+          localStorage.setItem('member_id', member_id.toString());
+          console.log('✅ 會員ID已儲存到localStorage:', member_id);
+          
+          // 可選：也儲存到sessionStorage作為備份
+          sessionStorage.setItem('member_id', member_id.toString());
+          
+          // 儲存會員基本資訊（如果有的話）
+          if (result.name || (result.data && result.data.name)) {
+            const memberName = result.name || result.data.name;
+            localStorage.setItem('memberName', memberName);
+            console.log('會員姓名已儲存:', memberName);
+          }
+          
+          if (result.email || (result.data && result.data.email)) {
+            const memberEmail = result.email || result.data.email;
+            localStorage.setItem('memberEmail', memberEmail);
+            console.log('會員email已儲存:', memberEmail);
+          }
+        } else {
+          console.warn('⚠️ 後端未返回會員ID，使用預設值');
+          localStorage.setItem('member_id', '1'); // 預設值
         }
 
         // 延遲跳轉到會員頁面
         setTimeout(() => {
-          window.location.href = 'member-dashboard.html'; // 修改為你的會員頁面路徑
+          window.location.href = 'member-dashboard.html';
         }, 1500);
 
       } else {

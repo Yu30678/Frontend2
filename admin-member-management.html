@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理員後台 - 會員管理</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Microsoft JhengHei', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .page-title {
+      font-size: 2em;
+      color: #2c3e50;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .back-btn {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .controls-section {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 25px;
+    }
+
+    .controls-row {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 300px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 45px 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: border-color 0.3s ease;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .search-btn {
+      position: absolute;
+      right: 5px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(45deg, #4CAF50, #45a049);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #6c757d;
+      color: white;
+    }
+
+    .btn-danger {
+      background: linear-gradient(45deg, #e74c3c, #c0392b);
+      color: white;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .data-table {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .table-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px 25px;
+    }
+
+    .table-title {
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+
+    .table-content {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    th {
+      background: #f8f9fa;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    tr:hover {
+      background: #f8f9fa;
+    }
+
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85em;
+      font-weight: 500;
+    }
+
+    .status-active {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-inactive {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 5px;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.85em;
+    }
+
+    .status-message {
+      margin-bottom: 20px;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 500;
+      display: none;
+      text-align: center;
+    }
+
+    .success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .loading {
+      background-color: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #ffffff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+      font-size: 1.1em;
+    }
+
+    .member-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #2c3e50;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .form-textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 25px;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 10px;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+
+      .controls-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-box {
+        min-width: auto;
+      }
+
+      .table-content {
+        font-size: 0.9em;
+      }
+
+      th, td {
+        padding: 10px 8px;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+      .modal-content {
+        margin: 20px 10px;
+        width: calc(100% - 20px);
+      }
+
+      .modal-actions {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1 class="page-title">
+      <span>👥</span>
+      會員管理系統
+    </h1>
+    <a href="admin-dashboard.html" class="back-btn">
+      ← 返回主控台
+    </a>
+  </div>
+
+  <div id="statusMessage" class="status-message"></div>
+
+  <div class="controls-section">
+    <div class="controls-row">
+      <div class="search-box">
+        <input type="text" class="search-input" placeholder="搜尋會員姓名、電子郵件..." id="memberSearchInput">
+        <button class="search-btn" onclick="searchMembers()">🔍</button>
+      </div>
+      <button class="btn btn-primary" onclick="addMember()">
+        ➕ 新增會員
+      </button>
+      <button class="btn btn-secondary" onclick="refreshMembers()">
+        🔄 重新整理
+      </button>
+    </div>
+  </div>
+
+  <div class="data-table">
+    <div class="table-header">
+      <div class="table-title">會員列表</div>
+    </div>
+    <div class="table-content">
+      <table id="membersTable">
+        <thead>
+          <tr>
+            <th>會員ID</th>
+            <th>姓名</th>
+            <th>電子郵件</th>
+            <th>電話</th>
+            <th>地址</th>
+            <th>註冊日期</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="membersTableBody">
+          <tr>
+            <td colspan="7" class="no-data">
+              <div class="loading-spinner"></div>
+              載入會員資料中...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 新增/編輯會員模態框 -->
+<div class="member-modal" id="memberModal">
+  <div class="modal-content">
+    <div class="modal-header" id="modalTitle">編輯會員資料</div>
+    <form id="memberForm">
+      <div class="form-group">
+        <label class="form-label" for="memberName">姓名 *</label>
+        <input type="text" class="form-input" id="memberName" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="memberEmail">電子郵件 *</label>
+        <input type="email" class="form-input" id="memberEmail" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="memberPhone">電話</label>
+        <input type="text" class="form-input" id="memberPhone" placeholder="請輸入電話號碼">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="memberAddress">地址</label>
+        <textarea class="form-input form-textarea" id="memberAddress" placeholder="請輸入地址"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="memberPassword">密碼</label>
+        <input type="password" class="form-input" id="memberPassword" placeholder="如不修改請留空">
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+        <button type="submit" class="btn btn-primary" id="saveBtn">儲存</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // API設定
+  const API_CONFIG = {
+    baseURL: 'http://localhost:8080',
+    endpoints: {
+      members: '/user/members',
+      deleteMember: '/user/members',
+      updateMember: '/user/members'
+    }
+  };
+
+  // 全域變數
+  let membersData = [];
+  let filteredMembers = [];
+  let currentAdminLevel = null; // 當前管理員權限等級
+
+  // 顯示狀態訊息
+  function showMessage(message, type = 'success') {
+    const messageElement = document.getElementById('statusMessage');
+    messageElement.textContent = message;
+    messageElement.className = `status-message ${type}`;
+    messageElement.style.display = 'block';
+
+    if (type !== 'loading') {
+      setTimeout(() => {
+        messageElement.style.display = 'none';
+      }, 4000);
+    }
+  }
+
+  // 載入會員資料
+  async function loadMembers() {
+    try {
+      showMessage('載入會員資料中...', 'loading');
+      
+      const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.members}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('adminToken') || ''}`
+        }
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        membersData = result.data || result || [];
+        filteredMembers = [...membersData];
+        renderMembersTable();
+        showMessage(`載入完成，共 ${membersData.length} 位會員`, 'success');
+      } else {
+        throw new Error('無法載入會員資料');
+      }
+    } catch (error) {
+      console.error('載入會員資料錯誤:', error);
+      
+      // 載入測試資料
+      loadTestData();
+      showMessage('連接後端失敗，載入測試資料', 'error');
+    }
+  }
+
+  // 載入測試資料
+  function loadTestData() {
+    membersData = [
+      {
+        member_id: 1,
+        name: '王小明',
+        email: 'wang@example.com',
+        phone: '0912345678',
+        address: '台北市信義區信義路五段7號',
+        create_at: '2024-01-15T10:30:00'
+      },
+      {
+        member_id: 2,
+        name: '李小華',
+        email: 'lee@example.com',
+        phone: '0923456789',
+        address: '新北市板橋區文化路一段188號',
+        create_at: '2024-02-20T14:20:00'
+      },
+      {
+        member_id: 3,
+        name: '張小美',
+        email: 'zhang@example.com',
+        phone: '0934567890',
+        address: '高雄市前金區中正四路211號',
+        create_at: '2024-03-10T09:15:00'
+      }
+    ];
+    filteredMembers = [...membersData];
+    renderMembersTable();
+  }
+
+  // 渲染會員表格
+  function renderMembersTable() {
+    const tbody = document.getElementById('membersTableBody');
+    
+    if (filteredMembers.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" class="no-data">沒有找到會員資料</td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = filteredMembers.map(member => `
+      <tr>
+        <td>${member.member_id}</td>
+        <td>${member.name || '未設定'}</td>
+        <td>${member.email}</td>
+        <td>${member.phone || '未設定'}</td>
+        <td>${member.address || '未設定'}</td>
+        <td>${formatDate(member.create_at)}</td>
+        <td>
+          <div class="action-buttons">
+            <button class="btn btn-primary btn-sm" onclick="editMember(${member.member_id})">
+              ✏️ 編輯
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="deleteMember(${member.member_id})">
+              🗑️ 刪除
+            </button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  // 格式化日期
+  function formatDate(dateString) {
+    if (!dateString) return '未知';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('zh-TW');
+  }
+
+  // 搜尋會員
+  function searchMembers() {
+    const searchTerm = document.getElementById('memberSearchInput').value.toLowerCase().trim();
+    
+    if (!searchTerm) {
+      filteredMembers = [...membersData];
+    } else {
+      filteredMembers = membersData.filter(member => 
+        (member.name && member.name.toLowerCase().includes(searchTerm)) ||
+        (member.email && member.email.toLowerCase().includes(searchTerm))
+      );
+    }
+    
+    renderMembersTable();
+    showMessage(`找到 ${filteredMembers.length} 位符合條件的會員`, 'success');
+  }
+
+  // 重新整理會員資料
+  function refreshMembers() {
+    document.getElementById('memberSearchInput').value = '';
+    loadMembers();
+  }
+
+  // 新增會員
+  function addMember() {
+    const name = prompt('請輸入會員姓名:');
+    const email = prompt('請輸入會員電子郵件:');
+    
+    if (name && email) {
+      showMessage('新增會員功能開發中...', 'error');
+    }
+  }
+
+  // 全域變數追加
+  let editingMemberId = null;
+
+  // 編輯會員
+  async function editMember(memberId) {
+    // 檢查權限
+    if (!checkOperationPermission()) {
+      return;
+    }
+    
+    const member = membersData.find(m => m.member_id === memberId);
+    if (member) {
+      editingMemberId = memberId;
+      document.getElementById('modalTitle').textContent = '編輯會員資料';
+      document.getElementById('memberName').value = member.name || '';
+      document.getElementById('memberEmail').value = member.email || '';
+      document.getElementById('memberPhone').value = member.phone || '';
+      document.getElementById('memberAddress').value = member.address || '';
+      
+      // 獲取該會員的原始密碼
+      try {
+        showMessage('載入會員詳細資料中...', 'loading');
+        const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.members}/${memberId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('adminToken') || ''}`
+          }
+        });
+        
+        if (response.ok) {
+          const memberDetail = await response.json();
+          const allMembers = memberDetail.data || memberDetail || [];
+          console.log('獲取到的會員詳細資料:', allMembers);
+          
+          // 從所有會員中找到對應的會員
+          const targetMember = Array.isArray(allMembers) 
+            ? allMembers.find(m => m.member_id === memberId)
+            : allMembers;
+          
+          if (targetMember) {
+            // 填入該會員的資料，包括密碼
+            document.getElementById('memberName').value = targetMember.name || '';
+            document.getElementById('memberEmail').value = targetMember.email || '';
+            document.getElementById('memberPhone').value = targetMember.phone || '';
+            document.getElementById('memberAddress').value = targetMember.address || '';
+            document.getElementById('memberPassword').value = targetMember.password || '';
+            
+            if (targetMember.password) {
+              showMessage('會員資料載入完成', 'success');
+            } else {
+              showMessage('警告：無法獲取原始密碼，請手動輸入', 'error');
+            }
+          } else {
+            showMessage('找不到該會員資料，請手動輸入密碼', 'error');
+            document.getElementById('memberPassword').placeholder = '請輸入密碼（必填）';
+          }
+        } else {
+          // 如果API不支援單一會員查詢，使用現有資料
+          console.log('無法獲取會員詳細資料，使用現有資料');
+          showMessage('無法獲取完整會員資料，請手動輸入密碼', 'error');
+          document.getElementById('memberPassword').placeholder = '請輸入密碼（必填）';
+        }
+      } catch (error) {
+        console.error('獲取會員密碼錯誤:', error);
+        showMessage('載入會員詳細資料失敗，請手動輸入密碼', 'error');
+        document.getElementById('memberPassword').placeholder = '請輸入密碼（必填）';
+      }
+      
+      document.getElementById('saveBtn').textContent = '更新';
+      document.getElementById('memberModal').style.display = 'flex';
+    }
+  }
+
+  // 新增會員（使用模態框）
+  function addMember() {
+    editingMemberId = null;
+    document.getElementById('modalTitle').textContent = '新增會員';
+    document.getElementById('memberName').value = '';
+    document.getElementById('memberEmail').value = '';
+    document.getElementById('memberPhone').value = '';
+    document.getElementById('memberAddress').value = '';
+    document.getElementById('memberPassword').value = '';
+    document.getElementById('saveBtn').textContent = '新增';
+    document.getElementById('memberModal').style.display = 'flex';
+  }
+
+  // 關閉模態框
+  function closeModal() {
+    document.getElementById('memberModal').style.display = 'none';
+    editingMemberId = null;
+  }
+
+  // 儲存會員
+  async function saveMember(event) {
+    event.preventDefault();
+    
+    const name = document.getElementById('memberName').value.trim();
+    const email = document.getElementById('memberEmail').value.trim();
+    const phone = document.getElementById('memberPhone').value.trim();
+    const address = document.getElementById('memberAddress').value.trim();
+    const password = document.getElementById('memberPassword').value.trim();
+    
+    if (!name || !email) {
+      showMessage('請填寫必要欄位（姓名和電子郵件）', 'error');
+      return;
+    }
+    
+    try {
+      showMessage(editingMemberId ? '更新會員中...' : '新增會員中...', 'loading');
+      
+      const memberData = {
+        name: name,
+        email: email,
+        phone: phone || null,
+        address: address || null
+      };
+      
+      if (editingMemberId) {
+        // 更新會員
+        memberData.member_id = editingMemberId;
+        // 編輯時必須包含密碼，如果密碼欄位為空，使用原有密碼
+        if (!password) {
+          showMessage('編輯會員時密碼欄位不能為空，請確保已載入原始密碼', 'error');
+          return;
+        }
+        memberData.password = password;
+        
+        const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.updateMember}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('adminToken') || ''}`
+          },
+          body: JSON.stringify(memberData)
+        });
+        
+        if (response.ok) {
+          // 更新本地資料
+          const memberIndex = membersData.findIndex(m => m.member_id === editingMemberId);
+          if (memberIndex !== -1) {
+            membersData[memberIndex] = { ...membersData[memberIndex], ...memberData };
+            filteredMembers = [...membersData];
+            renderMembersTable();
+          }
+          showMessage('會員資料更新成功', 'success');
+        } else {
+          const errorData = await response.json();
+          throw new Error(errorData.message || '更新失敗');
+        }
+      } else {
+        // 新增會員
+        if (!password) {
+          showMessage('新增會員時密碼為必填', 'error');
+          return;
+        }
+        memberData.password = password;
+        
+        const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.members}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('adminToken') || ''}`
+          },
+          body: JSON.stringify(memberData)
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          const newMember = result.data || result;
+          if (newMember) {
+            membersData.push(newMember);
+            filteredMembers = [...membersData];
+            renderMembersTable();
+          }
+          showMessage('會員新增成功', 'success');
+        } else {
+          const errorData = await response.json();
+          throw new Error(errorData.message || '新增失敗');
+        }
+      }
+      
+      closeModal();
+      
+    } catch (error) {
+      console.error('儲存會員錯誤:', error);
+      showMessage(`儲存會員失敗：${error.message}`, 'error');
+    }
+  }
+
+  // 刪除會員
+  async function deleteMember(memberId) {
+    // 檢查權限
+    if (!checkOperationPermission()) {
+      return;
+    }
+    
+    const member = membersData.find(m => m.member_id === memberId);
+    if (!member) return;
+    
+    if (confirm(`確定要刪除會員 "${member.name}" 嗎？此操作無法復原。`)) {
+      try {
+        showMessage('刪除會員中...', 'loading');
+        
+        const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.deleteMember}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('adminToken') || ''}`
+          },
+          body: JSON.stringify({ member_id: memberId })
+        });
+
+        if (response.ok) {
+          // 從本地資料中移除
+          membersData = membersData.filter(m => m.member_id !== memberId);
+          filteredMembers = filteredMembers.filter(m => m.member_id !== memberId);
+          renderMembersTable();
+          showMessage('會員刪除成功', 'success');
+        } else {
+          const errorData = await response.json();
+          throw new Error(errorData.message || '刪除失敗');
+        }
+      } catch (error) {
+        console.error('刪除會員錯誤:', error);
+        showMessage(`刪除會員失敗：${error.message}`, 'error');
+      }
+    }
+  }
+
+  // 檢查管理員權限
+  function checkAdminAuth() {
+    const adminToken = localStorage.getItem('adminToken');
+    if (!adminToken) {
+      showMessage('請先登入管理員帳號', 'error');
+      setTimeout(() => {
+        window.location.href = 'admin-login.html';
+      }, 2000);
+      return false;
+    }
+    
+    // 獲取管理員權限等級
+    const adminInfo = localStorage.getItem('adminInfo');
+    const adminLevel = localStorage.getItem('adminLevel');
+    
+    console.log('localStorage內容檢查:');
+    console.log('adminToken:', adminToken);
+    console.log('adminInfo:', adminInfo);
+    console.log('adminLevel:', adminLevel);
+    
+    // 嘗試多種方式獲取管理員等級
+    if (adminInfo) {
+      try {
+        const info = JSON.parse(adminInfo);
+        console.log('解析的adminInfo:', info);
+        currentAdminLevel = info.level !== undefined ? info.level : (info.adminLevel !== undefined ? info.adminLevel : null);
+      } catch (error) {
+        console.warn('無法解析管理員資訊:', error);
+        currentAdminLevel = null;
+      }
+    }
+    
+    // 如果adminInfo沒有level，嘗試從單獨的adminLevel項目取得
+    if (currentAdminLevel === null && adminLevel !== null) {
+      currentAdminLevel = parseInt(adminLevel);
+    }
+    
+    // 如果還是沒有，暫時設為測試等級（可移除）
+    if (currentAdminLevel === null) {
+      console.warn('無法從localStorage獲取管理員等級，請檢查登入流程');
+      // 臨時設置為測試用（實際使用時應移除）
+      currentAdminLevel = 0; // 暫時設為超級管理員以便測試
+      showMessage('警告：無法確認管理員等級，暫時設為超級管理員', 'error');
+    }
+    
+    console.log('最終設定的currentAdminLevel:', currentAdminLevel);
+    
+    return true;
+  }
+
+  // 檢查操作權限
+  function checkOperationPermission() {
+    if (currentAdminLevel === null) {
+      showMessage('無法確認管理員權限等級', 'error');
+      return false;
+    }
+    
+    // 只有等級 0-1 的管理員可以進行編輯和刪除操作
+    if (currentAdminLevel > 1) {
+      showMessage('權限不足', 'error');
+      return false;
+    }
+    
+    return true;
+  }
+
+  // 搜尋輸入框回車事件
+  document.getElementById('memberSearchInput').addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+      searchMembers();
+    }
+  });
+
+  // 表單提交事件
+  document.getElementById('memberForm').addEventListener('submit', saveMember);
+
+  // 點擊模態框外部關閉
+  document.getElementById('memberModal').addEventListener('click', function(event) {
+    if (event.target === this) {
+      closeModal();
+    }
+  });
+
+  // 頁面載入完成後檢查權限並載入資料
+  window.addEventListener('load', function() {
+    if (checkAdminAuth()) {
+      loadMembers();
+    }
+  });
+
+  // 錯誤處理
+  window.addEventListener('error', function(e) {
+    console.error('頁面錯誤:', e.error);
+  });
+</script>
+</body>
+</html>

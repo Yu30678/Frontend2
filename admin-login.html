@@ -327,7 +327,7 @@
 <script>
   // API設定
   const API_CONFIG = {
-    loginURL: 'http://localhost:8080/user/login'
+    loginURL: 'http://localhost:8080/user/users/login'
   };
 
   // 表單元素
@@ -399,7 +399,7 @@
     }
 
     const formData = {
-      username: usernameInput.value.trim(),
+      account: usernameInput.value.trim(),
       password: passwordInput.value.trim()
     };
 
@@ -428,26 +428,80 @@
       console.log('後端回應內容:', result);
 
       if (response.ok) {
-        showMessage('管理員登入成功！正在跳轉...', 'success');
+        // 檢查回應格式和狀態
+        if (result.status === 200 && result.data) {
+          const userData = result.data;
+          console.log('使用者資料:', userData);
 
-        // 儲存管理員登入資訊（如果需要）
-        if (result.token) {
-          console.log('管理員token:', result.token);
+          // 檢查是否為管理員 (假設 level 欄位: 0=超級管理員, 1=高級管理員, 2=中級管理員, 3=一般管理員)
+          if (userData.level !== undefined && userData.level !== null && userData.level <= 3) {
+            showMessage('管理員登入成功！正在跳轉...', 'success');
+
+            // 儲存管理員登入資訊到localStorage
+            localStorage.setItem('adminToken', result.token || 'admin_session_' + Date.now());
+            localStorage.setItem('adminId', userData.user_id || userData.id || '1');
+            localStorage.setItem('adminName', userData.name || '管理員');
+            localStorage.setItem('adminAccount', userData.account || formData.account);
+            localStorage.setItem('adminLevel', userData.level);
+
+            console.log('✅ 管理員登入成功, 使用者:', userData.name, '權限等級:', userData.level);
+
+            // 延遲跳轉到管理員後台
+            setTimeout(() => {
+              window.location.href = 'admin-dashboard.html'; // 修改為你的管理員後台路徑
+            }, 1500);
+
+          } else {
+            // 不是管理員
+            console.log('❌ 權限不足，使用者等級:', userData.level);
+            showMessage('權限不足！您不是管理員，無法存取管理系統', 'error');
+          }
+
+        } else {
+          // 回應格式不正確
+          console.log('❌ 回應格式錯誤:', result);
+          showMessage(result.message || '登入回應格式錯誤', 'error');
         }
 
-        // 延遲跳轉到管理員後台
-        setTimeout(() => {
-          window.location.href = '/admin-dashboard.html'; // 修改為你的管理員後台路徑
-        }, 1500);
-
       } else {
-        // 處理登入失敗
-        showMessage(result.message || '管理員登入失敗，請檢查您的帳號密碼', 'error');
+        // HTTP錯誤狀態
+        console.log('❌ HTTP錯誤:', response.status);
+        
+        // 根據狀態碼顯示不同錯誤訊息
+        if (response.status === 401) {
+          showMessage(result.message || '帳號或密碼錯誤，請重新輸入', 'error');
+        } else if (response.status === 403) {
+          showMessage('權限不足，無法存取管理系統', 'error');
+        } else if (response.status === 500) {
+          showMessage('伺服器內部錯誤，請聯繫系統管理員', 'error');
+        } else {
+          showMessage(result.message || `登入失敗 (錯誤代碼: ${response.status})`, 'error');
+        }
       }
 
     } catch (error) {
-      console.error('管理員登入錯誤:', error);
-      showMessage('連接伺服器失敗，請稍後再試', 'error');
+      console.error('❌ 管理員登入錯誤:', error);
+      
+      // 根據錯誤類型顯示不同訊息
+      let errorMessage = '連接伺服器失敗，請稍後再試';
+      if (error.message.includes('CORS')) {
+        errorMessage = 'CORS跨域錯誤，請檢查後端CORS設定';
+      } else if (error.message.includes('Failed to fetch')) {
+        errorMessage = '無法連接到後端服務器，請確認服務器是否運行在 http://localhost:8080';
+      } else if (error.message.includes('JSON')) {
+        errorMessage = '伺服器回應格式錯誤';
+      }
+      
+      showMessage(errorMessage, 'error');
+      
+      // 顯示詳細的除錯資訊
+      console.log('🔍 除錯資訊:');
+      console.log('   API地址:', API_CONFIG.loginURL);
+      console.log('   請求資料:', formData);
+      console.log('   錯誤詳情:', error);
+      console.log('   後端期望格式: { "account": "admin", "password": "password123" }');
+      console.log('   後端回應格式: { "status": 200, "message": "登入成功", "data": { "user_id": 1, "name": "管理員", "account": "admin", "level": 2 } }');
+      
     } finally {
       // 恢復按鈕狀態
       loginBtn.disabled = false;

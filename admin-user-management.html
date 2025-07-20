@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理員後台 - 管理員控制</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Microsoft JhengHei', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .page-title {
+      font-size: 2em;
+      color: #2c3e50;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .back-btn {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .controls-section {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 25px;
+    }
+
+    .controls-row {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 300px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 45px 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: border-color 0.3s ease;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: #F44336;
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #666;
+      font-size: 1.2em;
+    }
+
+    .btn-primary {
+      background: linear-gradient(45deg, #F44336, #D32F2F);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(45deg, #D32F2F, #B71C1C);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
+    }
+
+    .btn-secondary {
+      background: #6c757d;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background: #5a6268;
+      transform: translateY(-1px);
+    }
+
+    .btn-danger {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: all 0.3s ease;
+    }
+
+    .btn-danger:hover {
+      background: #c82333;
+      transform: translateY(-1px);
+    }
+
+    .data-table {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      margin-bottom: 25px;
+    }
+
+    .table-header {
+      background: linear-gradient(45deg, #F44336, #D32F2F);
+      color: white;
+      padding: 20px 25px;
+      font-size: 1.2em;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .table-content {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    th {
+      background: #f8f9fa;
+      font-weight: 600;
+      color: #2c3e50;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    tr:hover {
+      background: #f8f9fa;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .status-online {
+      color: #28a745;
+      font-weight: bold;
+    }
+
+    .status-offline {
+      color: #6c757d;
+      font-weight: bold;
+    }
+
+    .level-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .level-super {
+      background: #F44336;
+      color: white;
+    }
+
+    .level-high {
+      background: #2196F3;
+      color: white;
+    }
+
+    .level-medium {
+      background: #c5c306;
+      color: white;
+    }
+
+    .level-normal {
+      background: #21f332;
+      color: white;
+    }
+
+    .level-guest {
+      background: #9e9e9e;
+      color: white;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: 25px;
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .pagination button {
+      padding: 8px 16px;
+      border: 1px solid #e0e0e0;
+      background: white;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+    }
+
+    .pagination button:hover {
+      background: #f8f9fa;
+      border-color: #F44336;
+    }
+
+    .pagination button.active {
+      background: #F44336;
+      color: white;
+      border-color: #F44336;
+    }
+
+    .pagination button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .modal-title {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5em;
+      cursor: pointer;
+      color: #666;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .close-btn:hover {
+      background: #f8f9fa;
+      color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #F44336;
+    }
+
+    .form-select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1em;
+      background: white;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-select:focus {
+      outline: none;
+      border-color: #F44336;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: flex-end;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .status-message {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      font-weight: 500;
+      display: none;
+    }
+
+    .success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      font-size: 1.2em;
+      color: #666;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #F44336;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+      font-size: 1.1em;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 10px;
+      }
+      
+      .header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+      
+      .controls-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .search-box {
+        min-width: unset;
+      }
+      
+      .table-content {
+        font-size: 0.9em;
+      }
+      
+      th, td {
+        padding: 10px 8px;
+      }
+      
+      .actions {
+        flex-direction: column;
+        gap: 5px;
+      }
+      
+      .modal-content {
+        padding: 20px;
+        margin: 20px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 頁面標題 -->
+    <div class="header">
+      <h1 class="page-title">
+        <span>👨‍💼</span>
+        管理員控制
+      </h1>
+      <a href="admin-dashboard.html" class="back-btn">
+        <span>←</span>
+        返回主控台
+      </a>
+    </div>
+
+    <!-- 狀態訊息 -->
+    <div id="statusMessage" class="status-message"></div>
+
+    <!-- 控制面板 -->
+    <div class="controls-section">
+      <div class="controls-row">
+        <div class="search-box">
+          <input type="text" id="searchInput" class="search-input" placeholder="搜尋管理員姓名、帳號...">
+          <span class="search-icon">🔍</span>
+        </div>
+        <button class="btn-primary" onclick="openAddModal()">
+          <span>➕</span>
+          新增管理員
+        </button>
+      </div>
+    </div>
+
+    <!-- 管理員列表 -->
+    <div class="data-table">
+      <div class="table-header">
+        <span>📋</span>
+        管理員列表
+      </div>
+      <div class="table-content">
+        <div id="loading" class="loading">
+          <div class="loading-spinner"></div>
+          載入中...
+        </div>
+        <table id="usersTable" style="display: none;">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>姓名</th>
+              <th>帳號</th>
+              <th>權限等級</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+          </tbody>
+        </table>
+        <div id="noData" class="no-data" style="display: none;">
+          <span style="font-size: 2em; display: block; margin-bottom: 10px;">📝</span>
+          尚未有管理員資料
+        </div>
+      </div>
+    </div>
+
+    <!-- 分頁控制 -->
+    <div class="pagination" id="pagination" style="display: none;">
+      <button id="prevBtn" onclick="changePage(-1)">上一頁</button>
+      <span id="pageInfo">第 1 頁，共 1 頁</span>
+      <button id="nextBtn" onclick="changePage(1)">下一頁</button>
+    </div>
+  </div>
+
+  <!-- 新增/編輯模態框 -->
+  <div id="userModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">新增管理員</h3>
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+      </div>
+      <form id="userForm">
+        <div class="form-group">
+          <label for="userName" class="form-label">姓名 *</label>
+          <input type="text" id="userName" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label for="userAccount" class="form-label">帳號 *</label>
+          <input type="text" id="userAccount" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label for="userPassword" class="form-label">密碼 *</label>
+          <input type="password" id="userPassword" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label for="userLevel" class="form-label">權限等級 *</label>
+          <select id="userLevel" class="form-select" required>
+            <option value="">請選擇權限等級</option>
+            <option value="0">超級管理員 (Super Admin)</option>
+            <option value="1">高級管理員 (High Admin)</option>
+            <option value="2">中階管理員 (Medium Admin)</option>
+            <option value="3">一般管理員 (Normal Admin)</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" onclick="closeModal()">取消</button>
+          <button type="submit" class="btn-primary">
+            <span id="submitIcon">💾</span>
+            <span id="submitText">儲存</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // 全域變數
+    let users = [];
+    let filteredUsers = [];
+    let currentPage = 1;
+    let pageSize = 10;
+    let totalPages = 1;
+    let editingUserId = null;
+    let originalPassword = ''; // 儲存原始密碼用於比較
+    
+    // API 端點
+    const API_BASE_URL = 'http://localhost:8080/user';
+    const API_ENDPOINTS = {
+      users: `${API_BASE_URL}/users`,
+      login: `${API_BASE_URL}/users/login`
+    };
+
+    // 顯示狀態訊息
+    function showMessage(message, type = 'success') {
+      const messageElement = document.getElementById('statusMessage');
+      messageElement.textContent = message;
+      messageElement.className = `status-message ${type}`;
+      messageElement.style.display = 'block';
+
+      setTimeout(() => {
+        messageElement.style.display = 'none';
+      }, 5000);
+    }
+
+    // 載入管理員列表
+    async function loadUsers() {
+      try {
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('usersTable').style.display = 'none';
+        document.getElementById('noData').style.display = 'none';
+
+        const response = await fetch(API_ENDPOINTS.users, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        
+        if (result.status === 200 && result.data) {
+          users = result.data;
+          filteredUsers = [...users];
+          renderUsersTable();
+          setupPagination();
+        } else {
+          throw new Error(result.message || '載入失敗');
+        }
+      } catch (error) {
+        console.error('載入管理員列表失敗:', error);
+        showMessage('載入管理員列表失敗: ' + error.message, 'error');
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('noData').style.display = 'block';
+      }
+    }
+
+    // 渲染管理員表格
+    function renderUsersTable() {
+      const tbody = document.getElementById('usersTableBody');
+      const startIndex = (currentPage - 1) * pageSize;
+      const endIndex = startIndex + pageSize;
+      const pageUsers = filteredUsers.slice(startIndex, endIndex);
+
+      document.getElementById('loading').style.display = 'none';
+      
+      if (pageUsers.length === 0) {
+        document.getElementById('usersTable').style.display = 'none';
+        document.getElementById('noData').style.display = 'block';
+        return;
+      }
+
+      document.getElementById('usersTable').style.display = 'table';
+      document.getElementById('noData').style.display = 'none';
+
+      tbody.innerHTML = pageUsers.map(user => `
+        <tr>
+          <td>${user.userId}</td>
+          <td>${user.name || '-'}</td>
+          <td>${user.account || '-'}</td>
+          <td>${getLevelBadge(user.level)}</td>
+          <td class="actions">
+            <button class="btn-secondary" onclick="editUser(${user.userId})">
+              編輯
+            </button>
+            <button class="btn-danger" onclick="deleteUser(${user.userId})">
+              刪除
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // 取得權限等級徽章
+    function getLevelBadge(level) {
+      switch (level) {
+        case 0:
+          return '<span class="level-badge level-super">超級管理員</span>';
+        case 1:
+          return '<span class="level-badge level-high">高級管理員</span>';
+        case 2:
+          return '<span class="level-badge level-medium">中階管理員</span>';
+        case 3:
+          return '<span class="level-badge level-normal">一般管理員</span>';
+        default:
+          return '<span class="level-badge level-guest">未知</span>';
+      }
+    }
+
+    // 設定分頁
+    function setupPagination() {
+      totalPages = Math.ceil(filteredUsers.length / pageSize);
+      const pagination = document.getElementById('pagination');
+      const pageInfo = document.getElementById('pageInfo');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+
+      if (totalPages <= 1) {
+        pagination.style.display = 'none';
+        return;
+      }
+
+      pagination.style.display = 'flex';
+      pageInfo.textContent = `第 ${currentPage} 頁，共 ${totalPages} 頁`;
+      prevBtn.disabled = currentPage === 1;
+      nextBtn.disabled = currentPage === totalPages;
+    }
+
+    // 換頁
+    function changePage(direction) {
+      const newPage = currentPage + direction;
+      if (newPage >= 1 && newPage <= totalPages) {
+        currentPage = newPage;
+        renderUsersTable();
+        setupPagination();
+      }
+    }
+
+    // 搜尋功能
+    function setupSearch() {
+      document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        
+        if (searchTerm === '') {
+          filteredUsers = [...users];
+        } else {
+          filteredUsers = users.filter(user => 
+            (user.name && user.name.toLowerCase().includes(searchTerm)) ||
+            (user.account && user.account.toLowerCase().includes(searchTerm))
+          );
+        }
+        
+        currentPage = 1;
+        renderUsersTable();
+        setupPagination();
+      });
+    }
+
+    // 開啟新增模態框
+    function openAddModal() {
+      editingUserId = null;
+      document.getElementById('modalTitle').textContent = '新增管理員';
+      document.getElementById('submitIcon').textContent = '➕';
+      document.getElementById('submitText').textContent = '新增';
+      document.getElementById('userForm').reset();
+      document.getElementById('userModal').style.display = 'flex';
+      document.getElementById('userName').focus();
+    }
+
+    // 編輯管理員
+    function editUser(userId) {
+      const user = users.find(u => u.userId === userId);
+      if (!user) {
+        showMessage('找不到該管理員', 'error');
+        return;
+      }
+
+      editingUserId = userId;
+      document.getElementById('modalTitle').textContent = '編輯管理員';
+      document.getElementById('submitIcon').textContent = '💾';
+      document.getElementById('submitText').textContent = '更新';
+      
+      document.getElementById('userName').value = user.name || '';
+      document.getElementById('userAccount').value = user.account || '';
+      // 顯示星號代表現有密碼（依照實際密碼長度）
+      const passwordMask = user.password ? '*'.repeat(user.password.length) : '********';
+      document.getElementById('userPassword').value = passwordMask;
+      originalPassword = passwordMask; // 儲存原始星號密碼
+      document.getElementById('userLevel').value = user.level || '';
+      
+      document.getElementById('userModal').style.display = 'flex';
+      document.getElementById('userName').focus();
+    }
+
+    // 關閉模態框
+    function closeModal() {
+      document.getElementById('userModal').style.display = 'none';
+      document.getElementById('userForm').reset();
+      editingUserId = null;
+      originalPassword = '';
+    }
+
+    // 儲存管理員
+    async function saveUser(userData) {
+      try {
+        const url = editingUserId 
+          ? API_ENDPOINTS.users 
+          : API_ENDPOINTS.users;
+        
+        const method = editingUserId ? 'PUT' : 'POST';
+        
+        if (editingUserId) {
+          userData.userId = editingUserId;
+        }
+
+        const response = await fetch(url, {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(userData)
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        
+        if (result.status === 200 || result.status === 201) {
+          showMessage(editingUserId ? '管理員更新成功' : '管理員新增成功', 'success');
+          closeModal();
+          loadUsers();
+        } else {
+          throw new Error(result.message || '儲存失敗');
+        }
+      } catch (error) {
+        console.error('儲存管理員失敗:', error);
+        showMessage('儲存失敗: ' + error.message, 'error');
+      }
+    }
+
+    // 刪除管理員
+    async function deleteUser(userId) {
+      if (!confirm('確定要刪除此管理員嗎？此操作無法復原。')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(API_ENDPOINTS.users, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ user_id: userId })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        
+        if (result.status === 200) {
+          showMessage('管理員刪除成功', 'success');
+          loadUsers();
+        } else {
+          throw new Error(result.message || '刪除失敗');
+        }
+      } catch (error) {
+        console.error('刪除管理員失敗:', error);
+        showMessage('刪除失敗: ' + error.message, 'error');
+      }
+    }
+
+    // 表單提交處理
+    document.getElementById('userForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(this);
+      const passwordValue = document.getElementById('userPassword').value;
+      const userData = {
+        name: document.getElementById('userName').value.trim(),
+        account: document.getElementById('userAccount').value.trim(),
+        level: parseInt(document.getElementById('userLevel').value)
+      };
+
+      // 處理密碼欄位
+      if (editingUserId) {
+        // 編輯模式：如果密碼有改變，使用新密碼；否則使用原始密碼
+        if (passwordValue && passwordValue !== originalPassword) {
+          userData.password = passwordValue;
+        } else {
+          // 保持原密碼 - 從users陣列中取得原始密碼
+          const originalUser = users.find(u => u.userId === editingUserId);
+          userData.password = originalUser ? originalUser.password : passwordValue;
+        }
+      } else {
+        // 新增模式：密碼必填
+        userData.password = passwordValue;
+      }
+
+      // 驗證表單
+      if (!userData.name || !userData.account) {
+        showMessage('請填寫所有必填欄位', 'error');
+        return;
+      }
+
+      // 新增模式時密碼必填
+      if (!editingUserId && !userData.password) {
+        showMessage('密碼為必填欄位', 'error');
+        return;
+      }
+
+      if (userData.level < 0 || userData.level > 3) {
+        showMessage('請選擇正確的權限等級', 'error');
+        return;
+      }
+
+      saveUser(userData);
+    });
+
+    // 點擊模態框外部關閉
+    document.getElementById('userModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+
+    // 鍵盤快捷鍵
+    document.addEventListener('keydown', function(event) {
+      // ESC 關閉模態框
+      if (event.key === 'Escape') {
+        closeModal();
+      }
+      
+      // Ctrl+N 新增管理員
+      if (event.ctrlKey && event.key === 'n') {
+        event.preventDefault();
+        openAddModal();
+      }
+    });
+
+    // 頁面載入完成
+    window.addEventListener('load', function() {
+      loadUsers();
+      setupSearch();
+    });
+
+    // 錯誤處理
+    window.addEventListener('error', function(e) {
+      console.error('頁面錯誤:', e.error);
+      showMessage('頁面發生錯誤，請重新整理頁面', 'error');
+    });
+  </script>
+</body>
+</html>
