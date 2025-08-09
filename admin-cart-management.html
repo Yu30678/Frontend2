@@ -548,7 +548,7 @@
   const API_CONFIG = {
     baseURL: 'https://intellij-project1-production.up.railway.app',
     endpoints: {
-      cart: '/cart',
+      cart: '/user/carts',
       products: '/user/products',
       members: '/user/members'
     }
@@ -581,39 +581,57 @@
     try {
       showMessage('載入購物車資料中...', 'loading');
       
-      // 先載入會員列表
-      await loadMembers();
+      // 先載入會員列表和商品列表
+      await Promise.all([loadMembers(), loadProducts()]);
       
+      // 一次性獲取所有購物車資料，而不是為每個會員單獨請求
       const allCarts = [];
       
-      // 為每個會員載入購物車
-      for (const member of membersData) {
-        try {
-          const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.cart}?member_id=${member.member_id}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          });
+      // 只為有購物車資料的會員發送請求
+      // 這裡我們可以先嘗試獲取一些有購物車的會員ID
+      const memberIdsToCheck = membersData.slice(0, 10).map(m => m.member_id); // 限制一次只檢查10個會員
+      
+      // 使用Promise.all並行處理，但限制並發數量
+      const batchSize = 5; // 一次最多5個並行請求
+      for (let i = 0; i < memberIdsToCheck.length; i += batchSize) {
+        const batch = memberIdsToCheck.slice(i, i + batchSize);
+        const batchPromises = batch.map(async (memberId) => {
+          try {
+            const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.cart}?member_id=${memberId}`, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
 
-          if (response.ok) {
-            const result = await response.json();
-            const cartItems = result.data || [];
-            
-            if (cartItems.length > 0) {
-              // 按會員分組購物車項目
-              const memberCart = {
-                member_id: member.member_id,
-                member_name: member.name || `會員${member.member_id}`,
-                items: cartItems,
-                total_items: cartItems.reduce((sum, item) => sum + item.quantity, 0),
-                last_updated: cartItems[0]?.create_at || new Date().toISOString()
-              };
-              allCarts.push(memberCart);
+            if (response.ok) {
+              const result = await response.json();
+              const cartItems = result.data || [];
+              
+              if (cartItems.length > 0) {
+                const member = membersData.find(m => m.member_id === memberId);
+                const memberCart = {
+                  member_id: memberId,
+                  member_name: member?.name || `會員${memberId}`,
+                  items: cartItems,
+                  total_items: cartItems.reduce((sum, item) => sum + item.quantity, 0),
+                  last_updated: cartItems[0]?.create_at || new Date().toISOString()
+                };
+                return memberCart;
+              }
             }
+          } catch (error) {
+            console.warn(`無法載入會員 ${memberId} 的購物車:`, error);
           }
-        } catch (error) {
-          console.warn(`無法載入會員 ${member.member_id} 的購物車:`, error);
+          return null;
+        });
+        
+        const batchResults = await Promise.all(batchPromises);
+        allCarts.push(...batchResults.filter(result => result !== null));
+        
+        // 在批次之間添加小延遲，避免過度請求
+        if (i + batchSize < memberIdsToCheck.length) {
+          await new Promise(resolve => setTimeout(resolve, 100));
         }
       }
 

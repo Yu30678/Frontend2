@@ -13,7 +13,7 @@
 
     body {
       font-family: 'Microsoft JhengHei', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
       min-height: 100vh;
       display: flex;
       justify-content: center;
@@ -22,14 +22,12 @@
     }
 
     .login-container {
-      background: rgba(255, 255, 255, 0.95);
+      background: white;
       padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-      max-width: 420px;
+      border-radius: 15px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
       width: 100%;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .header {
@@ -37,18 +35,11 @@
       margin-bottom: 30px;
     }
 
-    .logo {
-      font-size: 2.5em;
-      color: #667eea;
+    .title {
+      font-size: 2.2em;
+      color: #2c3e50;
       margin-bottom: 10px;
       font-weight: bold;
-    }
-
-    .title {
-      font-size: 1.8em;
-      color: #333;
-      margin-bottom: 5px;
-      font-weight: 600;
     }
 
     .subtitle {
@@ -57,8 +48,7 @@
     }
 
     .form-group {
-      margin-bottom: 25px;
-      position: relative;
+      margin-bottom: 20px;
     }
 
     .form-label {
@@ -66,156 +56,91 @@
       margin-bottom: 8px;
       color: #333;
       font-weight: 500;
-      font-size: 0.95em;
     }
 
     .form-input {
       width: 100%;
-      padding: 15px 20px;
+      padding: 12px 15px;
       border: 2px solid #e0e0e0;
-      border-radius: 12px;
+      border-radius: 8px;
       font-size: 1em;
-      transition: all 0.3s ease;
-      background: #fafafa;
+      transition: border-color 0.3s ease;
+      font-family: inherit;
     }
 
     .form-input:focus {
       outline: none;
-      border-color: #667eea;
-      background: white;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-      transform: translateY(-1px);
-    }
-
-    .form-input::placeholder {
-      color: #aaa;
-    }
-
-    .password-toggle {
-      position: absolute;
-      right: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: #666;
-      cursor: pointer;
-      font-size: 1.1em;
-      padding: 5px;
-    }
-
-    .password-toggle:hover {
-      color: #667eea;
+      border-color: #4facfe;
+      box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
     }
 
     .login-btn {
       width: 100%;
-      padding: 15px;
-      background: linear-gradient(45deg, #667eea, #764ba2);
+      background: linear-gradient(45deg, #4facfe, #00f2fe);
       color: white;
       border: none;
-      border-radius: 12px;
+      padding: 12px 20px;
+      border-radius: 8px;
       font-size: 1.1em;
-      font-weight: bold;
+      font-weight: 500;
       cursor: pointer;
       transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 1px;
       margin-bottom: 20px;
-      position: relative;
-      overflow: hidden;
     }
 
     .login-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-    }
-
-    .login-btn:active {
-      transform: translateY(0);
+      background: linear-gradient(45deg, #43a3f5, #00e8f5);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
     }
 
     .login-btn:disabled {
-      opacity: 0.6;
+      background: #ccc;
       cursor: not-allowed;
       transform: none;
+      box-shadow: none;
     }
 
-    .register-section {
+    .back-link {
+      display: block;
       text-align: center;
-      padding-top: 20px;
-      border-top: 1px solid #e0e0e0;
-    }
-
-    .register-text {
       color: #666;
-      margin-bottom: 15px;
-      font-size: 0.95em;
-    }
-
-    .register-btn {
-      background: transparent;
-      color: #667eea;
-      border: 2px solid #667eea;
-      padding: 12px 30px;
-      border-radius: 12px;
-      font-size: 1em;
-      font-weight: 600;
-      cursor: pointer;
+      text-decoration: none;
+      padding: 10px;
+      border-radius: 8px;
       transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
 
-    .register-btn:hover {
-      background: #667eea;
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    .back-link:hover {
+      background: #f8f9fa;
+      color: #4facfe;
     }
 
-    .status-message {
-      margin-bottom: 20px;
+    .message {
       padding: 12px;
       border-radius: 8px;
+      margin-bottom: 20px;
       font-weight: 500;
-      display: none;
       text-align: center;
+      display: none;
     }
 
-    .success {
-      background-color: #d4edda;
+    .message.success {
+      background: #d4edda;
       color: #155724;
       border: 1px solid #c3e6cb;
     }
 
-    .error {
-      background-color: #f8d7da;
+    .message.error {
+      background: #f8d7da;
       color: #721c24;
       border: 1px solid #f5c6cb;
     }
 
-    .loading {
-      background-color: #d1ecf1;
+    .message.loading {
+      background: #d1ecf1;
       color: #0c5460;
       border: 1px solid #bee5eb;
-    }
-
-    .back-link {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .back-link a {
-      color: #667eea;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s ease;
-    }
-
-    .back-link a:hover {
-      color: #764ba2;
-      text-decoration: underline;
     }
 
     .loading-spinner {
@@ -236,19 +161,10 @@
     @media (max-width: 480px) {
       .login-container {
         padding: 30px 20px;
-        margin: 10px;
       }
-
-      .logo {
-        font-size: 2em;
-      }
-
+      
       .title {
-        font-size: 1.5em;
-      }
-
-      .form-input {
-        padding: 12px 15px;
+        font-size: 1.8em;
       }
     }
   </style>
@@ -256,41 +172,23 @@
 <body>
 <div class="login-container">
   <div class="header">
-    <div class="logo">👤</div>
-    <div class="title">會員登入</div>
-    <div class="subtitle">歡迎回來！請輸入您的帳號資訊</div>
+    <h1 class="title">會員登入</h1>
+    <p class="subtitle">歡迎回來！請登入您的帳戶</p>
   </div>
 
-  <div id="statusMessage" class="status-message"></div>
+  <div id="message" class="message"></div>
 
   <form id="loginForm">
     <div class="form-group">
-      <label for="email" class="form-label">電子郵件</label>
-      <input
-              type="email"
-              id="email"
-              name="email"
-              class="form-input"
-              placeholder="請輸入您的電子郵件"
-              required
-              autocomplete="email"
-      >
+      <label class="form-label" for="email">電子郵件</label>
+      <input type="email" class="form-input" id="email" name="email" required 
+             placeholder="請輸入您的電子郵件">
     </div>
 
-    <div class="form-group" style="position: relative;">
-      <label for="password" class="form-label">密碼</label>
-      <input
-              type="password"
-              id="password"
-              name="password"
-              class="form-input"
-              placeholder="請輸入您的密碼"
-              required
-              autocomplete="current-password"
-      >
-      <button type="button" class="password-toggle" onclick="togglePassword()">
-        👁️
-      </button>
+    <div class="form-group">
+      <label class="form-label" for="password">密碼</label>
+      <input type="password" class="form-input" id="password" name="password" required 
+             placeholder="請輸入您的密碼">
     </div>
 
     <button type="submit" class="login-btn" id="loginBtn">
@@ -298,239 +196,156 @@
     </button>
   </form>
 
-  <div class="register-section">
-    <div class="register-text">還沒有帳號嗎？</div>
-    <button type="button" class="register-btn" onclick="goToRegister()">
-      註冊會員
-    </button>
-  </div>
-
-  <div class="back-link">
-    <button type="button" class="register-btn" onclick="goToMain()">
-      返回主畫面
-    </button>
-  </div>
+  <a href="index.html" class="back-link">← 返回首頁</a>
 </div>
 
 <script>
-  // API設定
-  const API_CONFIG = {
-    loginURL: 'https://intellij-project1-production.up.railway.app/member/login',
-    registerURL: 'https://intellij-project1-production.up.railway.app/member/register' // 假設註冊API
-  };
+// API 設定
+const API_CONFIG = {
+  loginURL: 'https://intellij-project1-production.up.railway.app/member/login'
+};
 
-  // 表單元素
-  const loginForm = document.getElementById('loginForm');
-  const emailInput = document.getElementById('email');
-  const passwordInput = document.getElementById('password');
+// 顯示訊息
+function showMessage(type, message) {
+  const messageElement = document.getElementById('message');
+  messageElement.className = `message ${type}`;
+  messageElement.textContent = message;
+  messageElement.style.display = 'block';
+
+  if (type !== 'loading') {
+    setTimeout(() => {
+      messageElement.style.display = 'none';
+    }, 4000);
+  }
+}
+
+// 處理表單提交
+document.getElementById('loginForm').addEventListener('submit', async function(event) {
+  event.preventDefault();
+
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
   const loginBtn = document.getElementById('loginBtn');
-  const statusMessage = document.getElementById('statusMessage');
 
-  // 顯示狀態訊息
-  function showMessage(message, type = 'loading') {
-    statusMessage.textContent = message;
-    statusMessage.className = `status-message ${type}`;
-    statusMessage.style.display = 'block';
-
-    if (type !== 'loading') {
-      setTimeout(() => {
-        statusMessage.style.display = 'none';
-      }, 4000);
-    }
+  // 基本驗證
+  if (!email || !password) {
+    showMessage('error', '請填寫所有必填欄位');
+    return;
   }
 
-  // 切換密碼顯示/隱藏
-  function togglePassword() {
-    const passwordField = document.getElementById('password');
-    const toggleBtn = document.querySelector('.password-toggle');
+  // 禁用按鈕並顯示載入狀態
+  loginBtn.disabled = true;
+  loginBtn.innerHTML = '<span class="loading-spinner"></span>登入中...';
+  showMessage('loading', '正在驗證您的帳戶...');
 
-    if (passwordField.type === 'password') {
-      passwordField.type = 'text';
-      toggleBtn.textContent = '🙈';
-    } else {
-      passwordField.type = 'password';
-      toggleBtn.textContent = '👁️';
-    }
-  }
-
-  // 表單驗證
-  function validateForm() {
-    const email = emailInput.value.trim();
-    const password = passwordInput.value.trim();
-
-    if (!email) {
-      showMessage('請輸入電子郵件', 'error');
-      emailInput.focus();
-      return false;
-    }
-
-    if (!password) {
-      showMessage('請輸入密碼', 'error');
-      passwordInput.focus();
-      return false;
-    }
-
-    if (password.length < 2) {
-      showMessage('密碼長度至少需要6個字元', 'error');
-      passwordInput.focus();
-      return false;
-    }
-
-    return true;
-  }
-
-  // 處理登入提交
-  async function handleLogin(event) {
-    event.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
-    const formData = {
-      email: emailInput.value.trim(),
-      password: passwordInput.value.trim()
+  try {
+    // 準備登入資料
+    const loginData = {
+      email: email,
+      password: password
     };
 
-    try {
-      // 顯示載入狀態
-      loginBtn.disabled = true;
-      loginBtn.innerHTML = '<span class="loading-spinner"></span>登入中...';
-      showMessage('正在驗證登入資訊...', 'loading');
+    console.log('發送登入請求到:', API_CONFIG.loginURL);
+    console.log('登入資料:', { email: email, password: '[隱藏]' });
 
-      console.log('發送登入請求到:', API_CONFIG.loginURL);
-      console.log('登入資料:', formData);
+    // 發送登入請求
+    const response = await fetch(API_CONFIG.loginURL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      mode: 'cors',
+      credentials: 'omit',
+      body: JSON.stringify(loginData)
+    });
 
-      // 發送登入請求
-      const response = await fetch(API_CONFIG.loginURL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
+    console.log('登入回應狀態:', response.status);
 
-      console.log('後端回應狀態:', response.status);
+    const responseText = await response.text();
+    console.log('登入原始回應:', responseText);
 
-      const result = await response.json();
-      console.log('後端回應內容:', result);
+    if (response.ok) {
+      let result;
+      try {
+        result = JSON.parse(responseText);
+        console.log('登入解析後回應:', result);
+      } catch (parseError) {
+        console.error('JSON解析失敗:', parseError);
+        throw new Error('伺服器回應格式錯誤');
+      }
 
-      if (response.ok) {
-        showMessage('登入成功！正在跳轉...', 'success');
+      // 檢查登入是否成功
+      if (result.status === 200 && result.data && result.data.member_id) {
+        // 登入成功
+        const memberData = result.data;
+        
+        // 儲存會員資訊到 localStorage
+        localStorage.setItem('member_id', memberData.member_id.toString());
+        localStorage.setItem('memberName', memberData.name || '');
+        localStorage.setItem('memberEmail', memberData.email || '');
+        localStorage.setItem('authToken', memberData.token || 'authenticated');
 
-        // 儲存登入資訊
-        if (result.token) {
-          console.log('登入token:', result.token);
-          localStorage.setItem('authToken', result.token);
-        }
+        console.log('✅ 登入成功，會員ID:', memberData.member_id);
+        
+        showMessage('success', '登入成功！正在跳轉...');
 
-        // 從後端回應中取得會員ID
-        let member_id = null;
-        if (result.member_id) {
-          member_id = result.member_id;
-        } else if (result.data && result.data.member_id) {
-          member_id = result.data.member_id;
-        } else if (result.user && result.user.id) {
-          member_id = result.user.id;
-        } else if (result.id) {
-          member_id = result.id;
-        }
-
-        console.log('從後端取得的會員ID:', member_id);
-
-        if (member_id) {
-          // 儲存會員ID到localStorage
-          localStorage.setItem('member_id', member_id.toString());
-          console.log('✅ 會員ID已儲存到localStorage:', member_id);
-          
-          // 可選：也儲存到sessionStorage作為備份
-          sessionStorage.setItem('member_id', member_id.toString());
-          
-          // 儲存會員基本資訊（如果有的話）
-          if (result.name || (result.data && result.data.name)) {
-            const memberName = result.name || result.data.name;
-            localStorage.setItem('memberName', memberName);
-            console.log('會員姓名已儲存:', memberName);
-          }
-          
-          if (result.email || (result.data && result.data.email)) {
-            const memberEmail = result.email || result.data.email;
-            localStorage.setItem('memberEmail', memberEmail);
-            console.log('會員email已儲存:', memberEmail);
-          }
-        } else {
-          console.warn('⚠️ 後端未返回會員ID，使用預設值');
-          localStorage.setItem('member_id', '1'); // 預設值
-        }
-
-        // 延遲跳轉到會員頁面
+        // 跳轉到會員後台
         setTimeout(() => {
           window.location.href = 'member-dashboard.html';
         }, 1500);
 
       } else {
-        // 處理登入失敗
-        showMessage(result.message || '登入失敗，請檢查您的帳號密碼', 'error');
+        // 登入失敗
+        const errorMessage = result.message || '登入失敗，請檢查帳號密碼';
+        console.log('❌ 登入失敗:', errorMessage);
+        showMessage('error', errorMessage);
       }
 
-    } catch (error) {
-      console.error('登入錯誤:', error);
-      showMessage('連接伺服器失敗，請稍後再試', 'error');
-    } finally {
-      // 恢復按鈕狀態
-      loginBtn.disabled = false;
-      loginBtn.innerHTML = '登入';
+    } else {
+      // HTTP錯誤
+      console.error('HTTP錯誤:', response.status, responseText);
+      
+      let errorMessage = `登入失敗 (HTTP ${response.status})`;
+      try {
+        const errorResult = JSON.parse(responseText);
+        if (errorResult.message) {
+          errorMessage = errorResult.message;
+        }
+      } catch (e) {
+        // 使用預設錯誤訊息
+      }
+
+      showMessage('error', errorMessage);
     }
+
+  } catch (error) {
+    console.error('登入錯誤:', error);
+    
+    let errorMessage = '登入失敗，請稍後再試';
+    if (error.message.includes('Failed to fetch')) {
+      errorMessage = '無法連接到伺服器，請檢查網路連線';
+    } else if (error.message.includes('CORS')) {
+      errorMessage = '伺服器連線問題，請聯繫管理員';
+    }
+
+    showMessage('error', errorMessage);
+
+  } finally {
+    // 恢復按鈕狀態
+    loginBtn.disabled = false;
+    loginBtn.innerHTML = '登入';
   }
+});
 
-  // 前往註冊頁面
-  function goToRegister() {
-    // 這裡可以跳轉到註冊頁面
-    window.location.href = 'member-register.html'; // 修改為你的註冊頁面路徑
-
-    // 或者如果要在同一頁面處理註冊，可以顯示註冊表單
-    // showRegisterForm();
+// 頁面載入時檢查是否已登入
+window.addEventListener('load', function() {
+  const member_id = localStorage.getItem('member_id');
+  if (member_id && member_id !== 'null') {
+    console.log('檢測到已登入會員，跳轉到後台');
+    window.location.href = 'member-dashboard.html';
   }
-  // 返回入口頁面
-  function goToMain() {
-    window.location.href = 'index.html';
-  }
-
-  // 綁定事件監聽器
-  loginForm.addEventListener('submit', handleLogin);
-
-  // 登入按鈕點擊事件
-  loginBtn.addEventListener('click', function(event) {
-    event.preventDefault();
-    handleLogin(event);
-  });
-
-  // Enter鍵快速登入
-  document.addEventListener('keypress', function(event) {
-    if (event.key === 'Enter' && !loginBtn.disabled) {
-      event.preventDefault();
-      handleLogin(event);
-    }
-  });
-
-  // 輸入時清除錯誤訊息
-  emailInput.addEventListener('input', function() {
-    if (statusMessage.style.display === 'block' && statusMessage.classList.contains('error')) {
-      statusMessage.style.display = 'none';
-    }
-  });
-
-  passwordInput.addEventListener('input', function() {
-    if (statusMessage.style.display === 'block' && statusMessage.classList.contains('error')) {
-      statusMessage.style.display = 'none';
-    }
-  });
-
-  // 頁面載入完成後自動聚焦到email欄位
-  window.addEventListener('load', function() {
-    emailInput.focus();
-  });
+});
 </script>
 </body>
 </html>
