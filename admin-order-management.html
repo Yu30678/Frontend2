@@ -706,14 +706,22 @@
             };
           }
           
-          // 如果有商品資訊，添加到訂單明細中
-          if (item.product_id) {
-            ordersByOrderId[orderId].orderDetails.push({
-              order_id: orderId,
-              product_id: item.product_id,
-              quantity: item.quantity || 1,
-              price: item.price || 0
-            });
+          // 檢查是否有 orderDetails 陣列並且不為空
+          if (item.orderDetails && Array.isArray(item.orderDetails) && item.orderDetails.length > 0) {
+            ordersByOrderId[orderId].orderDetails = item.orderDetails;
+          } 
+          // 如果 orderDetails 為空但有商品資訊，從主要資料建立
+          else if (item.product_id && item.quantity && item.price) {
+            // 檢查是否已經存在相同的商品項目
+            const existingItem = ordersByOrderId[orderId].orderDetails.find(detail => detail.product_id === item.product_id);
+            if (!existingItem) {
+              ordersByOrderId[orderId].orderDetails.push({
+                order_id: orderId,
+                product_id: item.product_id,
+                quantity: item.quantity,
+                price: item.price
+              });
+            }
           }
         });
 
