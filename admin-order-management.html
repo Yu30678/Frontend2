@@ -674,26 +674,56 @@
     try {
       showMessage('載入訂單資料中...', 'loading');
       
+      // 先載入會員列表和商品列表
+      await Promise.all([loadMembers(), loadProducts()]);
+      
+      // 直接呼叫管理員API獲取所有訂單資料
       const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.orders}`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('adminToken') || ''}`
         }
       });
 
       if (response.ok) {
         const result = await response.json();
-        ordersData = result.data || result || [];
+        const allOrderData = result.data || result || [];
         
-        // 載入每個訂單的詳細資料
-        await loadAllOrderDetails();
+        // 將訂單資料按order_id分組，處理包含訂單詳細的結構
+        const ordersByOrderId = {};
         
+        allOrderData.forEach(item => {
+          const orderId = item.order_id;
+          
+          if (!ordersByOrderId[orderId]) {
+            // 創建新的訂單記錄
+            ordersByOrderId[orderId] = {
+              order_id: orderId,
+              member_id: item.member_id,
+              create_at: item.create_at || new Date().toISOString(),
+              orderDetails: []
+            };
+          }
+          
+          // 如果有商品資訊，添加到訂單明細中
+          if (item.product_id) {
+            ordersByOrderId[orderId].orderDetails.push({
+              order_id: orderId,
+              product_id: item.product_id,
+              quantity: item.quantity || 1,
+              price: item.price || 0
+            });
+          }
+        });
+
+        ordersData = Object.values(ordersByOrderId);
         filteredOrders = [...ordersData];
         renderOrdersGrid();
         updateStats();
         showMessage(`載入完成，共 ${ordersData.length} 筆訂單`, 'success');
       } else {
-        throw new Error('無法載入訂單資料');
+        throw new Error(`HTTP ${response.status}`);
       }
     } catch (error) {
       console.error('載入訂單資料錯誤:', error);
